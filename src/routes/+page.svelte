@@ -1,22 +1,31 @@
 <script lang="ts">
-    interface ipfsStruct {
-      node: HeliaLibp2p<Libp2p<{ x: Record<string, unknown> }>>;
-      fs: UnixFS;
-    }
-    let message: String = "Hello helia";
-    let cid: String;
-    let peerID: String;
-
+    import type { HeliaLibp2p } from 'helia';
+    import type { Libp2p } from '@libp2p/interface';
+    import type { UnixFS } from '@helia/unixfs';
     import { onMount } from 'svelte';
 
+    interface ipfsStruct {
+      node: HeliaLibp2p<any>;
+      fs: UnixFS;
+    }
+    let message: string = "Hello helia";
+    let cid: string;
+    let peerID: string;
+
     onMount(async () => {
-            let ipfs: ipfsStruct;
+            let ipfs: ipfsStruct | undefined;
             let { default: initHelia } = await import('$lib/heliaModule')
-            ipfs = await initHelia();
-            window.node = ipfs.node;
-            peerID = ipfs.node.libp2p.peerId.toString()
-            cid = await ipfs.fs.addBytes(new TextEncoder().encode(message));
-            //cid = cidTemp.toString();
+            const heliaNode = await initHelia();
+            if (heliaNode) {
+                ipfs = {
+                    node: heliaNode.node,
+                    fs: heliaNode.fs
+                };
+                (window as any).node = ipfs.node;
+                peerID = ipfs.node.libp2p.peerId.toString();
+                const cidTemp = await ipfs.fs.addBytes(new TextEncoder().encode(message));
+                cid = cidTemp.toString();
+            }
             console.log('CID:', cid);
             console.log('peerID:', peerID);
     });
