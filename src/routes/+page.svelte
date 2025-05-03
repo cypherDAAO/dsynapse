@@ -21,12 +21,15 @@
             console.log('peerID:', peerID);
     });
 </script>
-<h1>IPFS DApp Manager</h1>
+<h1 class="text-3xl font-bold">IPFS DApp Manager</h1>
 <h3>message: { message }</h3>
 <h3>CID: { cid }</h3>
 <h3>peerID: { peerID }</h3>
-<style>
-    /* Add your styles here */
+<style lang="postcss">
+  @reference "tailwindcss";
+  :global(html) {
+    background-color: theme(--color-gray-100);
+  }
 </style>
 
 
