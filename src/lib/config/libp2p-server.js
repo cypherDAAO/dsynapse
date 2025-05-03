@@ -17,7 +17,7 @@ export const Libp2pOptions = {
   ...defaults,
   datastore,
   peerDiscovery: [
-
+    mdns()
   ],
   addresses: {
     listen: [
@@ -26,15 +26,17 @@ export const Libp2pOptions = {
     ]
  },
   transports: [
-    WebTransportBidirectionalStream,
-    //tcp(),
-    //webSockets({
-    //  filter: filters.all
-    //})
+    // WebTransportBidirectionalStream,
+    // tcp(),
+    webSockets({
+      filter: filters.all
+    })
   ],
   connectionEncryption: [noise()],
   streamMuxers: [yamux()],
   services: {
     identify: identify(),
+    pubsub: gossipsub(),
+    relay: circuitRelayServer()
   }
 }
