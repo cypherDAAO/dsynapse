@@ -62,8 +62,8 @@
   }
 </script>
 
-<div class="llm-selector">
-  <h3>Prompts disponibles en blockchain</h3>
+<div class="">
+  <h3 class="text-2xl font-bold mb-4 text-fuchsia-800 dark:text-fuchsia-200">Prompts disponibles en blockchain</h3>
   
   {#if !isWalletConnected}
     <div class="message warning">
