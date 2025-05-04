@@ -59,24 +59,25 @@
       themeNames: ['NeonPurple', 'BlueTeal', 'Sunset', 'Rainbow'],
       params: {
         preset: 0,
-        morphDuration: 2.0,
-        pulseSpeed: 1.0,
+        morphDuration: 3.0,
+        pulseSpeed: 0.8,
         pulseIntensity: 0.2,
         microAnimationIntensity: 0.15,
         colorTheme: 'NeonPurple' as 'NeonPurple' | 'BlueTeal' | 'Sunset' | 'Rainbow',
-        burstSpeed: 0.8,
-        burstDuration: 6.0,
+        burstSpeed: 0.6,
+        burstDuration: 8.0,
         multiWave: true
       },
-      resolutionTheta: 100, // Mayor resolución para formas más suaves
-      resolutionPhi: 100,   // Mayor resolución para formas más suaves
+      resolutionTheta: 120,
+      resolutionPhi: 120,
       currentPresetParams: null as any,
       targetPresetParams: null as any,
       isMorphing: false,
       morphStartTime: 0,
       burstActive: 0.0,
       burstStartTime: -1.0,
-      lastBurstTime: 0
+      lastBurstTime: 0,
+      prevBurstValue: 0.0
     };
   
     // Función de superfórmula
@@ -107,6 +108,14 @@
       if (x >= max) return 1;
       x = (x - min) / (max - min);
       return x * x * (3 - 2 * x);
+    }
+  
+    // Función para suavizar aún más (smootherstep)
+    function smootherstep(x: number, min: number, max: number) {
+      if (x <= min) return 0;
+      if (x >= max) return 1;
+      x = (x - min) / (max - min);
+      return x * x * x * (x * (x * 6 - 15) + 10);
     }
   
     // Interpolación lineal
@@ -171,14 +180,14 @@
       const totalProgress = Math.min(1.0, elapsedTime / duration);
   
       if (wireframeMesh && wireframeMesh.material instanceof THREE.ShaderMaterial) {
-        const morphEffect = Math.sin(totalProgress * Math.PI);
+        const morphEffect = smootherstep(totalProgress, 0, 1) * Math.sin(totalProgress * Math.PI);
         wireframeMesh.material.uniforms.morphProgress.value = morphEffect;
       }
   
       const interpolated: any = {};
       if (state.currentPresetParams && state.targetPresetParams) {
         for (const key in state.currentPresetParams) {
-          const factor = Math.sin((totalProgress * Math.PI) / 2);
+          const factor = smootherstep(totalProgress, 0, 1);
           interpolated[key] = lerp(
             (state.currentPresetParams as any)[key],
             (state.targetPresetParams as any)[key],
@@ -230,15 +239,16 @@
           pulseSpeed: { value: state.params.pulseSpeed },
           pulseIntensity: { value: state.params.pulseIntensity },
           microAnimationIntensity: { value: state.params.microAnimationIntensity },
-          dashSize: { value: 0.1 },
-          dashRatio: { value: 0.5 },
+          dashSize: { value: 0.5 },
+          dashRatio: { value: 0.3 },
           burstActive: { value: state.burstActive },
           burstStartTime: { value: state.burstStartTime },
           burstSpeed: { value: state.params.burstSpeed },
           burstDuration: { value: state.params.burstDuration },
           burstColor: { value: new THREE.Color(state.themes[state.params.colorTheme].burstColor) },
           multiWave: { value: state.params.multiWave ? 1.0 : 0.0 },
-          morphProgress: { value: 0.0 }
+          morphProgress: { value: 0.0 },
+          prevBurstValue: { value: 0.0 }
         },
         vertexShader: `
           uniform float time;
@@ -260,7 +270,7 @@
               // Efecto de pulso ondulado como en las imágenes DSYN
               float pulse = sin(length(position) * 2.0 - time * pulseSpeed) * pulseIntensity;
               
-              // Microanimaciones para dar vida a la forma
+              // Microanimaciones para dar vida a la forma con suavizado
               float microAnim1 = sin(position.x * 8.0 + time * 3.0) * microAnimationIntensity;
               float microAnim2 = cos(position.y * 9.0 + time * 2.7) * microAnimationIntensity;
               float microAnim3 = sin(position.z * 7.0 + time * 3.3) * microAnimationIntensity;
@@ -268,10 +278,14 @@
               vec3 microOffset = vec3(microAnim1, microAnim2, microAnim3);
               vec3 pulseOffset = normalize(position) * pulse;
               
-              // Intensificar durante la transformación
-              microOffset *= (1.0 + morphProgress * 3.0);
+              // Intensificar durante la transformación con suavizado
+              microOffset *= (1.0 + morphProgress * 2.0);
               
               vec3 animatedPos = position + pulseOffset + microOffset;
+              
+              // Aumentar escala para hacer la animación más grande
+              animatedPos *= 1.5;
+              
               gl_Position = projectionMatrix * modelViewMatrix * vec4(animatedPos, 1.0);
           }
         `,
@@ -285,41 +299,47 @@
           uniform float burstDuration;
           uniform vec3 burstColor;
           uniform float multiWave;
+          uniform float prevBurstValue;
   
           varying vec3 vColor;
           varying vec3 vPos;
           varying float vLineDistance;
   
+          // Función de suavizado mejorada
+          float smootherstep(float edge0, float edge1, float x) {
+              float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+              return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+          }
+  
           void main() {
               vec3 finalColor = vColor;
               float finalIntensity = 1.0;
               
-              // Efecto de línea discontinua para simular las líneas fluidas de DSYN
+              // Efecto de línea discontinua mejorado para evitar parpadeos
               float totalSize = dashSize * (1.0 + dashRatio);
               float patternPos = mod(vLineDistance + time * 0.2, totalSize);
-              float dashPart = step(patternPos, dashSize);
+              float dashPart = smoothstep(0.0, 0.1, patternPos) * (1.0 - smoothstep(dashSize - 0.1, dashSize, patternPos));
               
-              if (dashPart < 0.1) {
-                  discard;
-              }
+              // En lugar de descartar fragmentos, los hacemos más transparentes
+              float opacity = 0.5 + dashPart * 0.5;
               
               finalIntensity *= (1.0 + dashPart * 0.5);
               
               // Efectos de burst para simular las burbujas y esferas en las imágenes DSYN
-              if (burstActive > 0.5) {
+              if (burstActive > 0.1) {
                   float burstElapsed = max(0.0, time - burstStartTime);
                   if (burstElapsed < burstDuration) {
                       float distOrigin = length(vPos);
-                      float progress = burstElapsed / burstDuration;
+                      float progress = smootherstep(0.0, 1.0, burstElapsed / burstDuration);
                       
                       float baseSpeed = burstSpeed;
                       float mainRadius = burstElapsed * baseSpeed;
                       float mainThickness = 0.4 * (1.0 - 0.5 * progress);
                       
                       float mainDist = abs(distOrigin - mainRadius);
-                      float mainWave = 1.0 - smoothstep(0.0, mainThickness, mainDist);
+                      float mainWave = 1.0 - smootherstep(0.0, mainThickness, mainDist);
                       
-                      float trailFactor = smoothstep(0.0, mainRadius, distOrigin) * (1.0 - smoothstep(mainRadius * 0.5, mainRadius, distOrigin));
+                      float trailFactor = smootherstep(0.0, mainRadius, distOrigin) * (1.0 - smootherstep(mainRadius * 0.5, mainRadius, distOrigin));
                       
                       float secondaryWave = 0.0;
                       float tertiaryWave = 0.0;
@@ -328,13 +348,13 @@
                           float secondaryRadius = burstElapsed * (baseSpeed * 1.5);
                           float secondaryThickness = 0.3 * (1.0 - 0.6 * progress);
                           float secondaryDist = abs(distOrigin - secondaryRadius);
-                          secondaryWave = 1.0 - smoothstep(0.0, secondaryThickness, secondaryDist);
+                          secondaryWave = 1.0 - smootherstep(0.0, secondaryThickness, secondaryDist);
                           secondaryWave *= 0.7 * (1.0 - progress * 0.7); 
                           
                           float tertiaryRadius = burstElapsed * (baseSpeed * 0.7);
                           float tertiaryThickness = 0.25 * (1.0 - 0.4 * progress);
                           float tertiaryDist = abs(distOrigin - tertiaryRadius);
-                          tertiaryWave = 1.0 - smoothstep(0.0, tertiaryThickness, tertiaryDist);
+                          tertiaryWave = 1.0 - smootherstep(0.0, tertiaryThickness, tertiaryDist);
                           tertiaryWave *= 0.5 * (1.0 - progress * 0.5); 
                       }
                       
@@ -349,24 +369,33 @@
                       float combinedWave = max(max(mainWave, secondaryWave * 0.8), tertiaryWave * 0.6);
                       combinedWave = max(combinedWave, trailFactor * 0.4);
                       
-                      float timeFade = 1.0 - smoothstep(burstDuration * 0.6, burstDuration, burstElapsed);
+                      // Suavizar la transición del final del burst
+                      float timeFade = 1.0 - smootherstep(burstDuration * 0.7, burstDuration, burstElapsed);
                       combinedWave *= timeFade;
                       
+                      // Mezcla más suave de colores
                       finalColor = mix(finalColor, waveColorShift, combinedWave * 0.8);
                       finalIntensity += combinedWave * 3.0;
                       
                       float rippleFactor = sin(distOrigin * 10.0 - burstElapsed * 5.0) * 0.5 + 0.5;
-                      rippleFactor *= smoothstep(0.0, mainRadius * 0.8, distOrigin) * (1.0 - smoothstep(mainRadius * 0.8, mainRadius, distOrigin));
+                      rippleFactor *= smootherstep(0.0, mainRadius * 0.8, distOrigin) * (1.0 - smootherstep(mainRadius * 0.8, mainRadius, distOrigin));
                       rippleFactor *= 0.15 * timeFade; 
                       
                       finalIntensity += rippleFactor;
+                  } else {
+                      // Transición suave cuando termina el burst
+                      float fadeOutTime = 0.5;
+                      float fadeOutProgress = min(1.0, (burstElapsed - burstDuration) / fadeOutTime);
+                      opacity *= (1.0 - fadeOutProgress);
                   }
               }
   
-              gl_FragColor = vec4(finalColor * finalIntensity, 1.0);
+              gl_FragColor = vec4(finalColor * finalIntensity, opacity);
           }
         `,
-        vertexColors: true
+        vertexColors: true,
+        transparent: true,
+        blending: THREE.AdditiveBlending
       });
   
       wireframeMesh = new THREE.LineSegments(geometry, material);
@@ -425,16 +454,17 @@
           positions[vertexIndex * 3 + 1] = y;
           positions[vertexIndex * 3 + 2] = z;
   
-          // Mezcla de colores suave para crear el efecto de gradiente como en DSYN
-          const colorMix = smoothstep(y, -1.5, 1.5);
+          // Mezcla de colores suave para crear el efecto de gradiente más suave
+          const colorMix = smootherstep(y, -1.5, 1.5);
           
-          const colorIndex1 = Math.floor(colorMix * (themeColors.length - 1));
+          const colorPos = colorMix * (themeColors.length - 1);
+          const colorIndex1 = Math.floor(colorPos);
           const colorIndex2 = Math.min(colorIndex1 + 1, themeColors.length - 1);
-          const colorFraction = colorMix * (themeColors.length - 1) - colorIndex1;
+          const colorFraction = colorPos - colorIndex1;
           
           const vertexColor = themeColors[colorIndex1]
             .clone()
-            .lerp(themeColors[colorIndex2], colorFraction);
+            .lerp(themeColors[colorIndex2], smootherstep(colorFraction, 0, 1));
           
           colors[vertexIndex * 3 + 0] = vertexColor.r;
           colors[vertexIndex * 3 + 1] = vertexColor.g;
@@ -472,16 +502,19 @@
   
       if (wireframeMesh.material instanceof THREE.ShaderMaterial) {
         wireframeMesh.material.uniforms.time.value = elapsedTime;
+        
+        wireframeMesh.material.uniforms.prevBurstValue.value = wireframeMesh.material.uniforms.burstActive.value;
+        
+        if (state.burstActive > 0.5 && elapsedTime - state.burstStartTime >= state.params.burstDuration) {
+          state.burstActive = Math.max(0.0, state.burstActive - 0.01);
+          if (state.burstActive <= 0.01) {
+            state.burstActive = 0.0;
+            state.burstStartTime = -1.0;
+          }
+        }
+        
         wireframeMesh.material.uniforms.burstActive.value = state.burstActive;
         wireframeMesh.material.uniforms.burstStartTime.value = state.burstStartTime;
-  
-        if (
-          state.burstActive > 0.5 &&
-          elapsedTime - state.burstStartTime >= state.params.burstDuration
-        ) {
-          state.burstActive = 0.0;
-          state.burstStartTime = -1.0;
-        }
       }
   
       // Actualizar rotación
@@ -596,7 +629,7 @@
         0.1,
         1000
       );
-      camera.position.z = 5;
+      camera.position.z = 4;
   
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(container.clientWidth, container.clientHeight);
@@ -621,18 +654,18 @@
       window.addEventListener('mouseup', handleMouseUp);
       window.addEventListener('resize', onResize);
   
-      // Configurar transformación automática cada 5 segundos
+      // Configurar transformación automática a intervalos más largos para reducir parpadeos
       const morphInterval = setInterval(() => {
         const nextPreset = (state.params.preset + 1) % state.presets.length;
         startMorphing(nextPreset);
-      }, 5000);
-  
-      // Configurar explosiones automáticas cada 8 segundos
-      const burstInterval = setInterval(() => {
-        triggerBurst();
       }, 8000);
   
-      // Configurar cambio de tema cada 7 segundos
+      // Configurar explosiones automáticas a intervalos más largos
+      const burstInterval = setInterval(() => {
+        triggerBurst();
+      }, 12000);
+  
+      // Configurar cambio de tema a intervalos más largos
       const themeInterval = setInterval(() => {
         const currentThemeIndex = state.themeNames.indexOf(state.params.colorTheme);
         const nextThemeIndex = (currentThemeIndex + 1) % state.themeNames.length;
@@ -648,7 +681,7 @@
           const themeColor = state.themes[state.params.colorTheme].burstColor || '#ffffff';
           wireframeMesh.material.uniforms.burstColor.value.set(themeColor);
         }
-      }, 7000);
+      }, 10000);
   
       // Función de limpieza
       return () => {
