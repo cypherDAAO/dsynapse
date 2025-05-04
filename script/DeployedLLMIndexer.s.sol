@@ -14,7 +14,7 @@ contract LLMIndexerScript is Script {
 
     function setUp() public {
         llmIndexerAddr = vm.envAddress("LLMINDEXERADDRS");
-        llmsURI = vm.envString("llms", ' ');
+        llmsURI = vm.envString("llms", '\n');
         // Deployed contract must have Owner as ACC0)
         owner = vm.envAddress("ACC0");
     }
