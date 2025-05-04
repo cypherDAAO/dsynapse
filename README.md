@@ -51,13 +51,34 @@ $ forge snapshot
 ### Anvil
 
 ```shell
-$ anvil
+$ anvil --host 0.0.0.0
 ```
 
 ### Deploy
 
+**Script deployment and test**
+using the script follows diferent verifications first before deploying the
+contract, more about it here.
+
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+$source .env
+$forge script script/LLMIndexer.s.sol:LLMIndexerScript --fork-url $PROVIDER_URL --private-key $PK0 --broadcast
+
+```
+> where:
+> PROVIDER_URL can be either the anvil fork or a blockchain RPC
+> $PK0 is the private-key
+
+The correct smartcontract operations by running the `DeployedLLMIndexer.s.sol`
+script
+
+Should set after deploying the smart contract in the .env named after
+LLMINDEXERADDRS, once you update the address you can run the following
+script to verify it was deployed correctly.
+
+```shell
+$source .env
+$forge script script/DeployedLLMIndexer.s.sol:LLMIndexerScript --fork-url $PROVIDER_URL --private-key $PK0 --broadcast
 ```
 
 ### Cast
