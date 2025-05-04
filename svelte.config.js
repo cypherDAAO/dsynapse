@@ -6,7 +6,10 @@ const config = {
 	kit: {
 		adapter: adapter({
 			fallback: 'index.html' // Esto hace que todas las rutas se sirvan con index.html
-		})
+		}),
+		paths: {
+			relative: true // Establecemos esta propiedad para usar rutas absolutas
+		}
 	}
 };
 
