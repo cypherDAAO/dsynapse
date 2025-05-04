@@ -30,7 +30,9 @@
 		<SuperformulaAnimation />
 	</div>
 	<div class="absolute inset-0 flex items-center justify-center">
-		<div class="relative z-10 flex flex-col items-center justify-center px-4 md:px-8 lg:px-0 py-8 max-w-7xl">
+		<div
+			class="relative z-10 flex flex-col items-center justify-center px-4 md:px-8 lg:px-0 py-8 max-w-7xl"
+		>
 			<h1 class="text-3xl font-bold">IPFS DApp Manager</h1>
 			<h3>message: {message}</h3>
 			<h3>CID: {cid}</h3>

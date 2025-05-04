@@ -1,3 +1,17 @@
 @import 'tailwindcss';
+@import '$lib/styles/fonts.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Configuración base de fuentes */
+body {
+  /* Usar la versión variable de Inter para mejor rendimiento si está disponible */
+  font-family: var(--font-inter-var);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* Usar la versión variable de Geist para mejor rendimiento si está disponible */
+  font-family: var(--font-geist-var);
+  font-feature-settings: 'salt', 'ss01', 'ss02';
+}

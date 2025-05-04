@@ -2,9 +2,9 @@
     import ChatLLM from '$lib/components/ChatLLM.svelte';
   </script>
   
-  <main>
+  <section class="mt-[64px]">
     <ChatLLM />
-  </main>
+  </section>
   
   <style>
     :global(body) {
