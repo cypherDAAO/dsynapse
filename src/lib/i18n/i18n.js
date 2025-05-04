@@ -6,11 +6,13 @@ import { browser } from '$app/environment';
 import es_common from './locales/es/common.json';
 import es_credits from './locales/es/credits.json';
 import es_home from './locales/es/home.json';
+import es_chat from './locales/es/chat.json';
 
 // Inglés
 import en_common from './locales/en/common.json';
 import en_credits from './locales/en/credits.json';
 import en_home from './locales/en/home.json';
+import en_chat from './locales/en/chat.json';
 
 // Objeto con todos los idiomas disponibles
 export const locales = {
@@ -20,7 +22,8 @@ export const locales = {
     namespaces: {
       common: es_common,
       credits: es_credits,
-      home: es_home
+      home: es_home,
+      chat: es_chat
     }
   },
   en: {
@@ -29,7 +32,8 @@ export const locales = {
     namespaces: {
       common: en_common,
       credits: en_credits,
-      home: en_home
+      home: en_home,
+      chat: en_chat
     }
   }
 };

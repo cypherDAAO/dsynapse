@@ -4,6 +4,7 @@
     import LLMSelector from '$lib/components/LLMSelector.svelte';
     import type { LLM } from '$lib/contracts/LLMIndexer';
     import { web3Store } from '$lib/components/web3store';
+    import { t } from '$lib/i18n/i18n';
     
     let selectedLLM: LLM | null = null;
     let isWalletConnected = false;
@@ -27,124 +28,96 @@
     }
 </script>
 
-<section class="mt-[64px] container mx-auto px-4">
-  <div class="wallet-section {isWalletConnected ? 'connected' : ''}">
-    <h2>Conecta tu Wallet</h2>
-    <p class="description">
-      <strong>Importante:</strong> Debes conectar tu wallet de Ethereum para acceder a los prompts almacenados en la blockchain.
-    </p>
-    <WalletConect />
-  </div>
-  
-  {#if isWalletConnected}
-    <div class="llm-section">
-      <LLMSelector onSelectLLM={handleSelectLLM} />
+<section class="mt-[128px] container mx-auto px-4 mb-16">
+  {#if !isWalletConnected}
+    <!-- Pantalla de conexión de wallet -->
+    <div class="flex justify-center items-center min-h-[70vh] mt-16">
+      <div class="bg-white dark:bg-[#1a1a2e] p-10 md:p-12 rounded-3xl shadow-xl max-w-lg w-full text-center animate-fadeIn border border-fuchsia-100 dark:border-fuchsia-900/30 backdrop-blur-sm">
+        <div class="mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-50 to-fuchsia-100 dark:from-fuchsia-900/20 dark:to-fuchsia-800/30 text-fuchsia-600 dark:text-fuchsia-300 mb-8 shadow-inner">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <path d="M22 10h-4v4h4"></path>
+          </svg>
+        </div>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-fuchsia-50 tracking-tight">{$t('chat.wallet.title')}</h1>
+        <p class="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
+          {$t('chat.wallet.description')}
+        </p>
+        <div class="mb-8 transform hover:scale-105 transition-transform duration-300">
+          <WalletConect />
+        </div>
+        <div class="flex items-start bg-gradient-to-br from-fuchsia-50 to-transparent dark:from-fuchsia-900/10 dark:to-fuchsia-900/5 p-5 rounded-2xl text-left border border-fuchsia-100/70 dark:border-fuchsia-700/20 backdrop-blur-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-4 mt-0.5 text-fuchsia-500 dark:text-fuchsia-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <p class="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+            {$t('chat.wallet.info')}
+          </p>
+        </div>
+      </div>
     </div>
-    
-    <ChatLLM {selectedLLM} {isWalletConnected} />
   {:else}
-    <div class="locked-message">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-      </svg>
-      <h3>Acceso Bloqueado</h3>
-      <p>Para utilizar el chat con IA, primero debes conectar tu wallet de Ethereum.</p>
+    <!-- Interfaz principal cuando la wallet está conectada -->
+    <div class="mt-16">
+      <!-- Barra superior con información de wallet (visible solo en desktop) -->
+      <div class="hidden md:flex justify-between items-center mb-6 p-4 bg-white dark:bg-[#1a1a2e] rounded-2xl shadow-lg border border-gray-100 dark:border-fuchsia-900/30 backdrop-blur-sm">
+        <div class="flex items-center text-sm text-gray-700 dark:text-fuchsia-200">
+          <span class="w-2 h-2 rounded-full bg-fuchsia-500 mr-2 animate-pulse"></span>
+          <span>{$t('chat.wallet.connected')}</span>
+        </div>
+        <div class="transform hover:scale-105 transition-transform duration-300">
+          <WalletConect />
+        </div>
+      </div>
+      
+      <!-- Contenido principal en dos columnas en desktop, reordenado en móvil -->
+      <div class="grid md:grid-cols-[300px_1fr] gap-8">
+        <!-- En móvil, el chat aparece primero -->
+        <div class="order-2 md:order-2 md:col-start-2">
+          <ChatLLM {selectedLLM} {isWalletConnected} />
+        </div>
+        
+        <!-- En móvil, el sidebar aparece después del chat -->
+        <div class="order-3 md:order-1 md:col-start-1 md:row-start-1 bg-white dark:bg-[#1a1a2e] rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-fuchsia-900/30 mt-8 md:mt-0 backdrop-blur-sm hover:shadow-xl transition-shadow duration-300">
+          <h2 class="text-xl sm:text-2xl font-bold mb-4 text-fuchsia-700 dark:text-fuchsia-300 tracking-tight">{$t('chat.prompts.title')}</h2>
+          <LLMSelector onSelectLLM={handleSelectLLM} />
+        </div>
+        
+        <!-- Barra inferior con información de wallet (visible solo en móvil) -->
+        <div class="order-1 md:hidden flex justify-between items-center mb-6 p-4 bg-white dark:bg-[#1a1a2e] rounded-2xl shadow-lg border border-gray-100 dark:border-fuchsia-900/30 backdrop-blur-sm">
+          <div class="flex items-center text-sm text-gray-700 dark:text-fuchsia-200">
+            <span class="w-2 h-2 rounded-full bg-fuchsia-500 mr-2 animate-pulse"></span>
+            <span>{$t('chat.wallet.connected')}</span>
+          </div>
+          <div class="transform hover:scale-105 transition-transform duration-300">
+            <WalletConect />
+          </div>
+        </div>
+      </div>
     </div>
   {/if}
 </section>
 
 <style>
-    :global(body) {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-      background-color: #fafafa;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    :global(.dark) :global(body) {
-      background-color: #111827;
-      color: #f3f4f6;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .wallet-section {
-      margin-bottom: 2rem;
-      padding: 1.5rem;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      border-left: 4px solid #f97316;
-      transition: all 0.3s ease;
-    }
-    
-    .wallet-section.connected {
-      border-left-color: #10b981;
-    }
-    
-    :global(.dark) .wallet-section {
-      background-color: #1f2937;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    h2 {
-      margin-top: 0;
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-    
-    .description {
-      margin-bottom: 1.5rem;
-      color: #4b5563;
-    }
-    
-    :global(.dark) .description {
-      color: #9ca3af;
-    }
-    
-    .llm-section {
-      margin-bottom: 2rem;
-    }
-    
-    .locked-message {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 4rem 2rem;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      color: #6b7280;
-    }
-    
-    :global(.dark) .locked-message {
-      background-color: #1f2937;
-      color: #9ca3af;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    .locked-message svg {
-      margin-bottom: 1rem;
-      color: #f97316;
-    }
-    
-    :global(.dark) .locked-message svg {
-      color: #f59e0b;
-    }
-    
-    .locked-message h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    .locked-message p {
-      max-width: 400px;
-    }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  /* Estilo global para mejorar el tema oscuro */
+  :global(body.dark) {
+    background-color: #0f0f23;
+    background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.05), transparent 400px);
+  }
+  
+  :global(.dark) :global(.backdrop-blur-sm) {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
 </style>

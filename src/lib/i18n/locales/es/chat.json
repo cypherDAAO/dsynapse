@@ -1,0 +1,38 @@
+{
+  "wallet": {
+    "connect": "Conectar Wallet",
+    "connected": "Wallet Conectada",
+    "disconnect": "Desconectar",
+    "title": "Conecta tu Wallet",
+    "description": "Para acceder a los prompts almacenados en blockchain y utilizar la IA, primero debes conectar tu wallet de Ethereum.",
+    "info": "Al conectar tu wallet, podrás acceder a contenido personalizado en la blockchain de Ethereum.",
+    "status": {
+      "connecting": "Conectando...",
+      "errorConnect": "Error al conectar wallet",
+      "errorDisconnect": "Error al desconectar wallet"
+    }
+  },
+  "prompts": {
+    "title": "Prompts en Blockchain",
+    "available": "Prompts disponibles en blockchain",
+    "select": "Selecciona un prompt de la lista para comenzar",
+    "loading": "Cargando prompts desde la blockchain...",
+    "notFound": "No se encontraron prompts en el contrato",
+    "error": "Error al cargar prompts",
+    "retry": "Reintentar"
+  },
+  "chat": {
+    "title": "Chat con IA en el Navegador",
+    "placeholder": "Escribe tu mensaje...",
+    "placeholderNoWallet": "Conecta tu wallet y selecciona un prompt para comenzar",
+    "send": "Enviar",
+    "thinking": "Pensando...",
+    "firstMessage": "¡Escribe tu primer mensaje para comenzar!",
+    "promptLoaded": "Prompt especializado cargado",
+    "loadingModel": "Cargando modelo de IA..."
+  },
+  "locked": {
+    "title": "Acceso Bloqueado",
+    "description": "Para utilizar el chat con IA, primero debes conectar tu wallet de Ethereum."
+  }
+} 
