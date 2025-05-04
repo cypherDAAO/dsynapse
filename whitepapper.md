@@ -79,22 +79,24 @@ Incorporar elementos clave de Finanzas Descentralizadas (DeFi):
 #### Resumen de Ecuaciones
 
 1. **Dinámica de Suministro de Tokens**:
-   \[
-   \frac{dS}{dt} = I(t) - B(t)
-   \]
-   - **I(t) = \sum Ik(t) + Itail**
-   - **B(t) = \sum \beta \times \text{RateAction}_j**
+
+$$\frac{dS}{dt} = I(t) - B(t)$$
+
+Donde:
+- $$I(t) = \sum Ik(t) + Itail$$
+- $$B(t) = \sum \beta \times RateAction_j$$
 
 2. **Retroalimentación de Calificación y Emisión**:
-   \[
-   \frac{dR_j}{dt} = \eta \times B_j(t) - \delta \times R_j(t)
-   \]
-   - **Ik(t) = V_k \times (\text{Rewardbase} + \gamma \times Rrelated(k, t))**
-   - **B_j(t) \propto \text{acciones de calificación}**
+
+$$\frac{dR_j}{dt} = \eta \times B_j(t) - \delta \times R_j(t)$$
+
+Donde:
+- $$Ik(t) = V_k \times (Rewardbase + \gamma \times Rrelated(k, t))$$
+- $$B_j(t) \propto \text{acciones de calificación}$$
 
 #### Condiciones de Estabilidad
 
-- Para mantener un suministro deflacionario ("ultrasound"), asegurar **B(t) > I(t) + Itail**.
+- Para mantener un suministro deflacionario ("ultrasound"), asegurar $$B(t) > I(t) + Itail$$.
 - Gestionar γ, η, δ para equilibrar incentivos y regular el suministro efectivamente.
 
 ### Gobernanza e Implementación
