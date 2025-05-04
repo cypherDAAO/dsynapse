@@ -4,6 +4,7 @@
 	import LicenseLink from '$lib/components/LicenseLink.svelte';
 	import '../app.css';
 	import { onMount } from 'svelte';
+	import { t } from '$lib/i18n';
 
 	onMount(() => {
 		// Detectar preferencia guardada o del sistema
@@ -65,7 +66,7 @@
 	<footer class="py-6 px-4 border-t border-gray-200 dark:border-zinc-800 mt-12">
 		<div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
 			<p class="text-sm text-zinc-500 dark:text-zinc-400 mb-4 sm:mb-0">
-				© {new Date().getFullYear()} DSynapse. Todos los derechos reservados.
+				© {new Date().getFullYear()} DSynapse. {$t('common.footer.all_rights_reserved')}
 			</p>
 			<div class="flex space-x-6">
 				<LicenseLink />

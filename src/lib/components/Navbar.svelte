@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import ThemeToggle from './ThemeToggle.svelte';
+  import LanguageSelector from './LanguageSelector.svelte';
+  import { t } from '$lib/i18n';
   
   let menuOpen = false;
   let scrolled = false;
@@ -78,7 +80,8 @@
       </div>
       
       <!-- Botones de acción (escritorio) -->
-      <div class="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+      <div class="absolute inset-y-0 right-0 flex items-center gap-3 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+        <LanguageSelector />
         <ThemeToggle />
       </div>
     </div>
@@ -125,6 +128,11 @@
                   >
                     Chat IA
                   </a>
+                </li>
+                <li class="mt-4">
+                  <div class="px-3 py-2">
+                    <LanguageSelector />
+                  </div>
                 </li>
               </ul>
             </div>

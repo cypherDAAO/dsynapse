@@ -1,0 +1,25 @@
+{
+  "title": "Credits and Licenses",
+  "fonts": {
+    "title": "Fonts",
+    "designed_by": "Designed by",
+    "license": "License"
+  },
+  "license_terms": {
+    "title": "SIL OFL License Terms",
+    "description": "Fonts under the SIL Open Font License (OFL) can be used, studied, modified, and redistributed freely as long as they are not sold by themselves. The fonts, including any derivative works, can be bundled, embedded, redistributed, and/or sold with any software provided that any reserved names are not used by derivative works. The fonts and derivatives, however, cannot be released under any other license. The requirement for fonts to remain under this license does not apply to any document created using the fonts or their derivatives.",
+    "attribution": {
+      "title": "Attribution Requirements",
+      "description": "The SIL OFL license requires the inclusion of the copyright notice and the full license text in any distribution that includes the fonts. That's why we've created this credits page."
+    },
+    "dapps": {
+      "title": "Compliance in Decentralized Applications",
+      "description": "In the context of decentralized applications, it is especially important to maintain intact license attributions. This ensures that, regardless of who hosts or distributes the application, the rights of the original font authors are respected and remain visible to all users."
+    }
+  },
+  "full_license": {
+    "title": "Full License Text",
+    "description": "The full text of the SIL Open Font License (OFL) is available in the file",
+    "view_button": "View full license text"
+  }
+} 
