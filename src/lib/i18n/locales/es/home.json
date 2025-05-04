@@ -1,0 +1,41 @@
+{
+  "hero": {
+    "title": "DSynapse",
+    "subtitle": "Plataforma DeFi y modelo tokenómico para IA descentralizada utilizando Ethereum e IPFS",
+    "learn_more": "Saber más",
+    "tokenomics": "Tokenomics"
+  },
+  "about": {
+    "title": "¿Qué es DSynapse?",
+    "research_title": "Investigación",
+    "research_text": "Nuestra investigación tiene como objetivo crear un modelo DeFi y tokenómico para una IA descentralizada utilizando Ethereum e IPFS, con emisión de tokens que sigue un modelo de dinero ultrasónico que equilibra la emisión y quema según cada caso de uso.",
+    "technology_title": "Tecnología",
+    "technology_text": "Utilizamos IPFS para el almacenamiento descentralizado de datos y Ethereum para nuestra implementación de contratos inteligentes, creando un ecosistema completamente descentralizado para el entrenamiento y uso de modelos de IA."
+  },
+  "tokenomics": {
+    "title": "Modelo Tokenómico",
+    "issuance_title": "Emisión de Tokens",
+    "issuance_text": "Emisión de tokens mediante votación en la DAO para verificar propiedad intelectual y conjuntos de datos de entrenamiento de código abierto.",
+    "burning_title": "Quema de Tokens",
+    "burning_text": "Quema de tokens para valorar los conjuntos de datos más consumidos y los LMS más utilizados, aumentando su calificación e incentivando la emisión con un enfoque ultrasónico.",
+    "rewards_title": "Recompensas",
+    "rewards_text": "Recompensas para conjuntos de datos de propiedad intelectual que han donado su propiedad a bienes públicos, fomentando la contribución al ecosistema."
+  },
+  "how_it_works": {
+    "title": "Cómo Funciona",
+    "step1_title": "Contribución de Datos",
+    "step1_text": "Los creadores de contenido y propietarios de datos contribuyen con conjuntos de datos para el entrenamiento de modelos de IA y verifican su propiedad intelectual a través de la DAO.",
+    "step2_title": "Validación y Emisión",
+    "step2_text": "La DAO valida la calidad y originalidad de los datos mediante un proceso de votación, emitiendo tokens como recompensa por las contribuciones valiosas.",
+    "step3_title": "Consumo y Quema",
+    "step3_text": "Los usuarios consumen datos y servicios de IA, quemando tokens en el proceso, lo que aumenta la calificación de los conjuntos de datos más utilizados y crea un ciclo económico sostenible."
+  },
+  "cta": {
+    "title": "¡Únete a la revolución de la IA descentralizada!",
+    "subtitle": "Sé parte de la próxima generación de inteligencia artificial descentralizada y ayuda a construir un futuro más equitativo y accesible.",
+    "button": "Comenzar Ahora"
+  },
+  "footer": {
+    "copyright": "© 2024 DSynapse. Todos los derechos reservados."
+  }
+} 

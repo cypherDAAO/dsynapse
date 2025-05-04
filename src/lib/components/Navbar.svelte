@@ -31,7 +31,7 @@
   });
 </script>
 
-<nav class={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 pointer-events-none ${scrolled ? 'backdrop-blur bg-black/20' : ''}`}>
+<nav class={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 pointer-events-none ${scrolled ? 'backdrop-blur bg-fuchsia-200/20' : ''}`}>
   <div class="w-full px-2 sm:px-6 lg:px-8 mx-0">
     <div class="relative flex h-16 items-center justify-between z-50 max-w-7xl mx-auto py-4 pointer-events-auto">
       <!-- Botón de menú móvil -->

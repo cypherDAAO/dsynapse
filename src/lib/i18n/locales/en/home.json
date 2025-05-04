@@ -1,0 +1,41 @@
+{
+  "hero": {
+    "title": "DSynapse",
+    "subtitle": "DeFi platform and tokenomics model for decentralized AI using Ethereum and IPFS",
+    "learn_more": "Learn More",
+    "tokenomics": "Tokenomics"
+  },
+  "about": {
+    "title": "What is DSynapse?",
+    "research_title": "Research",
+    "research_text": "Our research aims to create a DeFi and tokenomics model for decentralized AI using Ethereum and IPFS, with token issuance following an ultrasound money model that balances minting and burning for each use case.",
+    "technology_title": "Technology",
+    "technology_text": "We use IPFS for decentralized data storage and Ethereum for our smart contract implementation, creating a fully decentralized ecosystem for AI model training and usage."
+  },
+  "tokenomics": {
+    "title": "Tokenomics Model",
+    "issuance_title": "Token Issuance",
+    "issuance_text": "Issuance of tokens through voting in the DAO to verify intellectual property and open-source training datasets.",
+    "burning_title": "Token Burning",
+    "burning_text": "Burning of tokens to rate the most consumed datasets and most used LMSs, increasing their rating and incentivizing issuance with an ultrasound approach.",
+    "rewards_title": "Rewards",
+    "rewards_text": "Rewards for intellectual property datasets that have donated ownership to public goods, encouraging contribution to the ecosystem."
+  },
+  "how_it_works": {
+    "title": "How It Works",
+    "step1_title": "Data Contribution",
+    "step1_text": "Content creators and data owners contribute datasets for AI model training and verify their intellectual property through the DAO.",
+    "step2_title": "Validation and Issuance",
+    "step2_text": "The DAO validates the quality and originality of the data through a voting process, issuing tokens as rewards for valuable contributions.",
+    "step3_title": "Consumption and Burning",
+    "step3_text": "Users consume AI data and services, burning tokens in the process, which increases the rating of the most used datasets and creates a sustainable economic cycle."
+  },
+  "cta": {
+    "title": "Join the Decentralized AI Revolution!",
+    "subtitle": "Be part of the next generation of decentralized artificial intelligence and help build a more equitable and accessible future.",
+    "button": "Get Started Now"
+  },
+  "footer": {
+    "copyright": "© 2024 DSynapse. All rights reserved."
+  }
+} 

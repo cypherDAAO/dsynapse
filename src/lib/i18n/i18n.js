@@ -5,26 +5,13 @@ import { browser } from '$app/environment';
 // Español
 import es_common from './locales/es/common.json';
 import es_credits from './locales/es/credits.json';
+import es_home from './locales/es/home.json';
 
 // Inglés
 import en_common from './locales/en/common.json';
 import en_credits from './locales/en/credits.json';
+import en_home from './locales/en/home.json';
 
-/**
- * @typedef {Object} TranslationNamespace
- * @property {Object.<string, string|TranslationNamespace>} [key] - Claves de traducción anidadas
- */
-
-/**
- * @typedef {Object} LocaleConfig
- * @property {string} name - Nombre del idioma
- * @property {string} flag - Emoji de la bandera
- * @property {Object.<string, TranslationNamespace>} namespaces - Espacios de nombres con traducciones
- */
-
-/**
- * @type {Object.<string, LocaleConfig>}
- */
 // Objeto con todos los idiomas disponibles
 export const locales = {
   es: {
@@ -32,7 +19,8 @@ export const locales = {
     flag: '🇲🇽',
     namespaces: {
       common: es_common,
-      credits: es_credits
+      credits: es_credits,
+      home: es_home
     }
   },
   en: {
@@ -40,14 +28,12 @@ export const locales = {
     flag: '🇬🇧',
     namespaces: {
       common: en_common,
-      credits: en_credits
+      credits: en_credits,
+      home: en_home
     }
   }
 };
 
-/**
- * @returns {string} - Código del idioma
- */
 // Determinar el idioma inicial (guardado en localStorage o por defecto del navegador)
 function getInitialLocale() {
   if (!browser) return 'es'; // Por defecto español en el servidor
@@ -63,50 +49,48 @@ function getInitialLocale() {
 // Store para el idioma actual
 export const locale = writable(getInitialLocale());
 
+// Función auxiliar para acceder a propiedades anidadas de forma segura
+function getNestedProperty(obj, path) {
+  if (!obj || !path) return undefined;
+  return path.split('.').reduce((prev, curr) => {
+    return prev && typeof prev === 'object' ? prev[curr] : undefined;
+  }, obj);
+}
+
 // Store derivado para las traducciones
 export const t = derived(locale, ($locale) => {
-  /**
-   * Función para acceder a las traducciones anidadas
-   * @param {string} key - Clave de traducción en formato 'namespace.clave.subclave'
-   * @param {Object.<string, string>} [params] - Parámetros para reemplazar en la traducción
-   * @returns {string} - Traducción
-   */
   return function(key, params) {
-    // Separar el namespace del resto de la clave
-    const [namespace, ...rest] = key.split('.');
-    const restKey = rest.join('.');
-    
-    if (!namespace || !restKey) return key;
-    
-    // Obtener el diccionario del namespace para el idioma actual
-    const dict = locales[$locale]?.namespaces[namespace] || locales.es.namespaces[namespace];
-    
-    if (!dict) return key;
-    
-    // Navegar por las claves anidadas
-    const keys = restKey.split('.');
-    let value = dict;
-    
-    for (const k of keys) {
-      value = value?.[k];
-      if (value === undefined) return key; // Si no existe la traducción, devolver la clave
+    try {
+      // Separar el namespace del resto de la clave
+      const [namespace, ...rest] = key.split('.');
+      const restKey = rest.join('.');
+      
+      if (!namespace || !restKey) return key;
+      
+      // Acceder primero al namespace y luego a la propiedad anidada
+      const dict = locales[$locale]?.namespaces[namespace];
+      if (!dict) return key;
+      
+      const value = getNestedProperty(dict, restKey);
+      if (value === undefined) return key;
+      
+      // Si hay parámetros, reemplazarlos en la traducción
+      if (params && typeof value === 'string') {
+        let result = value;
+        for (const [paramKey, paramValue] of Object.entries(params)) {
+          result = result.replace(new RegExp(`{{${paramKey}}}`, 'g'), paramValue);
+        }
+        return result;
+      }
+      
+      return value;
+    } catch (error) {
+      console.error(`Error al acceder a la traducción ${key}:`, error);
+      return key;
     }
-    
-    // Si hay parámetros, reemplazarlos en la traducción
-    if (params && typeof value === 'string') {
-      return Object.entries(params).reduce((result, [paramKey, paramValue]) => {
-        return result.replace(new RegExp(`{{${paramKey}}}`, 'g'), paramValue);
-      }, value);
-    }
-    
-    return value;
   };
 });
 
-/**
- * Cambia el idioma actual
- * @param {string} newLocale - Código del nuevo idioma
- */
 // Función para cambiar el idioma
 export function setLocale(newLocale) {
   if (locales[newLocale]) {
@@ -117,12 +101,6 @@ export function setLocale(newLocale) {
   }
 }
 
-/**
- * Añade un nuevo espacio de nombres
- * @param {string} localeCode - Código del idioma
- * @param {string} namespace - Nombre del espacio
- * @param {Object} translations - Objeto con traducciones
- */
 // Función para añadir un nuevo namespace (útil para cargar traducciones dinámicamente)
 export function addNamespace(localeCode, namespace, translations) {
   if (locales[localeCode]) {

@@ -7,7 +7,7 @@
 
 <a 
   href="/creditos" 
-  class="text-sm text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white transition-colors duration-200 {isActive ? 'underline font-medium' : ''}"
+  class="text-sm text-white hover:text-zinc-100 transition-colors duration-200 {isActive ? 'underline font-medium' : ''}"
 >
   Licencias y Créditos
 </a> 

@@ -595,28 +595,6 @@
       event.preventDefault();
     }
   
-    function handleWheel(event: WheelEvent) {
-      event.preventDefault();
-  
-      if (!camera) return;
-  
-      // Zoom con la rueda del ratón
-      const zoomSpeed = 0.5;
-      const zoomDirection = event.deltaY > 0 ? 1 : -1;
-  
-      // Obtener distancia actual al origen
-      const distanceVector = new THREE.Vector3(0, 0, 0).sub(camera.position);
-      const currentDistance = distanceVector.length();
-  
-      // Calcular nueva distancia
-      const newDistance = Math.max(2, Math.min(10, currentDistance + zoomDirection * zoomSpeed));
-  
-      // Aplicar nueva distancia manteniendo la dirección
-      distanceVector.normalize().multiplyScalar(-newDistance);
-      camera.position.copy(distanceVector);
-      camera.lookAt(0, 0, 0);
-    }
-  
     // Configuración y limpieza
     onMount(() => {
       if (!container) return;
@@ -629,7 +607,7 @@
         0.1,
         1000
       );
-      camera.position.z = 4;
+      camera.position.z = 2;
   
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(container.clientWidth, container.clientHeight);
@@ -648,7 +626,6 @@
       container.addEventListener('mousedown', handleMouseDown);
       container.addEventListener('click', handleClick);
       container.addEventListener('contextmenu', handleContextMenu);
-      container.addEventListener('wheel', handleWheel);
   
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
@@ -699,7 +676,6 @@
           container.removeEventListener('mousedown', handleMouseDown);
           container.removeEventListener('click', handleClick);
           container.removeEventListener('contextmenu', handleContextMenu);
-          container.removeEventListener('wheel', handleWheel);
         }
   
         window.removeEventListener('mousemove', handleMouseMove);

@@ -1,12 +1,24 @@
 <script>
-	let { children } = $props();
-	import Navbar from '$lib/components/Navbar.svelte';
-	import LicenseLink from '$lib/components/LicenseLink.svelte';
+	import { page } from '$app/stores';
 	import '../app.css';
+	import Navbar from '$lib/components/Navbar.svelte';
+	import { locale, setLocale, t } from '$lib/i18n';
 	import { onMount } from 'svelte';
-	import { t } from '$lib/i18n';
+	import LicenseLink from '$lib/components/LicenseLink.svelte';
 
+	// Inicializar i18n al cargar
 	onMount(() => {
+		// Detectar idioma del navegador si no hay uno ya guardado
+		if (typeof window !== 'undefined') {
+			const savedLocale = localStorage.getItem('locale');
+			if (!savedLocale) {
+				const browserLang = navigator.language.split('-')[0];
+				if (['es', 'en'].includes(browserLang)) {
+					setLocale(browserLang);
+				}
+			}
+		}
+
 		// Detectar preferencia guardada o del sistema
 		const savedTheme = localStorage.getItem('theme');
 		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -44,16 +56,57 @@
 			background-color: var(--color-zinc-950); /* Mismo color que bg-gray-900 */
 		}
 
-		h1, h2, h3, h4, h5, h6 {
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
 			font-family: var(--font-geist);
 		}
 	</style>
-	<link rel="preload" as="font" href="/fonts/inter/Inter-Regular.woff2" type="font/woff2" crossorigin="anonymous">
-	<link rel="preload" as="font" href="/fonts/inter/Inter-Medium.woff2" type="font/woff2" crossorigin="anonymous">
-	<link rel="preload" as="font" href="/fonts/inter/InterVariable.woff2" type="font/woff2" crossorigin="anonymous">
-	<link rel="preload" as="font" href="/fonts/geist/Geist-Regular.woff2" type="font/woff2" crossorigin="anonymous">
-	<link rel="preload" as="font" href="/fonts/geist/Geist-Medium.woff2" type="font/woff2" crossorigin="anonymous">
-	<link rel="preload" as="font" href="/fonts/geist/Geist[wght].woff2" type="font/woff2" crossorigin="anonymous">
+	<link
+		rel="preload"
+		as="font"
+		href="/fonts/inter/Inter-Regular.woff2"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preload"
+		as="font"
+		href="/fonts/inter/Inter-Medium.woff2"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preload"
+		as="font"
+		href="/fonts/inter/InterVariable.woff2"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preload"
+		as="font"
+		href="/fonts/geist/Geist-Regular.woff2"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preload"
+		as="font"
+		href="/fonts/geist/Geist-Medium.woff2"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
+	<link
+		rel="preload"
+		as="font"
+		href="/fonts/geist/Geist[wght].woff2"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
 </svelte:head>
 
 <div
@@ -61,11 +114,11 @@
 >
 	<Navbar />
 	<main class="mt-[-64px] flex-grow">
-		{@render children()}
+		<slot />
 	</main>
-	<footer class="py-6 px-4 border-t border-gray-200 dark:border-zinc-800 mt-12">
+	<footer class="py-6 px-4 bg-fuchsia-700 text-white">
 		<div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
-			<p class="text-sm text-zinc-500 dark:text-zinc-400 mb-4 sm:mb-0">
+			<p class="text-sm text-white mb-4 sm:mb-0">
 				© {new Date().getFullYear()} DSynapse. {$t('common.footer.all_rights_reserved')}
 			</p>
 			<div class="flex space-x-6">
