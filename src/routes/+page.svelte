@@ -3,9 +3,12 @@
 	import type { Libp2p } from '@libp2p/interface';
 	import type { UnixFS } from '@helia/unixfs';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import SuperformulaAnimation from '$lib/components/SuperformulaAnimation.svelte';
 	import { t } from '$lib/i18n';
 	import WalletButton from '$lib/components/WalletButton.svelte';
+	import Card from '$lib/components/Card.svelte';
+	import LiquidSphere from '$lib/components/LiquidSphere.svelte';
 
 	interface ipfsStruct {
 		node: any; // Simplificando el tipo para evitar errores de linter
@@ -14,6 +17,7 @@
 	let message: string = 'Hello helia';
 	let cid: any; // Cambiado a any para evitar errores de linter
 	let peerID: string = '';
+	let visible: boolean = true; // Variable para controlar la visibilidad de las cards
 
 	onMount(async () => {
 		try {
@@ -70,30 +74,46 @@
 >
 	<div class="container mx-auto px-4">
 		<h2
-			class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-8 text-center !text-fuchsia-900 dark:!text-white"
+			class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-12 text-center !text-fuchsia-900 dark:!text-white"
 		>
 			{$t('home.about.title')}
 		</h2>
-		<div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+		<div class="max-w-6xl mx-auto grid md:grid-cols-1 lg:grid-cols-2 gap-10">
+			<Card 
+				titulo={$t('home.about.research_title')} 
+				descripcion={$t('home.about.research_text')}
+			/>
+			
+			<!-- Card personalizada con LiquidSphere - ahora más larga -->
 			<div
-				class="bg-white dark:bg-fuchsia-800 p-6 rounded-2xl shadow-md border border-zinc-200 dark:border-fuchsia-700"
+				class="relative overflow-hidden rounded-3xl min-h-[650px]"
+				transition:fade={{ duration: 700 }}
+				class:opacity-0={!visible}
+				class:opacity-100={visible}
 			>
-				<h3 class="text-xl font-semibold mb-3 !text-fuchsia-700 dark:!text-white">
-					{$t('home.about.research_title')}
-				</h3>
-				<p class="!text-zinc-800 dark:!text-zinc-300">
-					{$t('home.about.research_text')}
-				</p>
-			</div>
-			<div
-				class="bg-white dark:bg-fuchsia-800 p-6 rounded-2xl shadow-md border border-zinc-200 dark:border-fuchsia-700"
-			>
-				<h3 class="text-xl font-semibold mb-3 !text-fuchsia-700 dark:!text-white">
-					{$t('home.about.technology_title')}
-				</h3>
-				<p class="!text-zinc-800 dark:!text-zinc-300">
-					{$t('home.about.technology_text')}
-				</p>
+				<div class="absolute inset-0">
+					<LiquidSphere />
+				</div>
+
+				<!-- Contenedor para el efecto glassmorphism - tema claro visible solo en modo claro -->
+				<div
+					class="absolute left-0 right-0 bottom-0 h-2/5 pointer-events-none backdrop-blur-md block dark:hidden light-mask"
+				></div>
+				
+				<!-- Contenedor para el efecto glassmorphism - tema oscuro visible solo en modo oscuro -->
+				<div
+					class="absolute left-0 right-0 bottom-0 h-2/5 pointer-events-none backdrop-blur-md hidden dark:block dark-mask"
+				></div>
+
+				<!-- Contenedor del texto separado del blur con más espacio -->
+				<div class="absolute left-0 right-0 bottom-0 h-2/5 flex items-center z-20">
+					<div class="p-8 w-full">
+						<h3 class="text-4xl font-medium mb-4 text-fuchsia-950 dark:text-white">{$t('home.about.technology_title')}</h3>
+						<p class="text-xl text-zinc-700 dark:text-zinc-200 leading-tight">
+							{$t('home.about.technology_text')}
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -111,7 +131,7 @@
 		</h2>
 		<div class="max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 			<div
-				class="bg-white dark:bg-fuchsia-800 p-6 rounded-2xl shadow-md border border-zinc-200 dark:border-fuchsia-700"
+
 			>
 				<h3 class="text-xl font-semibold mb-3 !text-fuchsia-700 dark:!text-white">
 					{$t('home.tokenomics.issuance_title')}
@@ -121,7 +141,7 @@
 				</p>
 			</div>
 			<div
-				class="bg-white dark:bg-fuchsia-800 p-6 rounded-2xl shadow-md border border-zinc-200 dark:border-fuchsia-700"
+
 			>
 				<h3 class="text-xl font-semibold mb-3 !text-fuchsia-700 dark:!text-white">
 					{$t('home.tokenomics.burning_title')}
@@ -131,7 +151,7 @@
 				</p>
 			</div>
 			<div
-				class="bg-white dark:bg-fuchsia-800 p-6 rounded-2xl shadow-md border border-zinc-200 dark:border-fuchsia-700"
+
 			>
 				<h3 class="text-xl font-semibold mb-3 !text-fuchsia-700 dark:!text-white">
 					{$t('home.tokenomics.rewards_title')}
