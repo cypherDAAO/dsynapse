@@ -1,18 +1,24 @@
-<script>
-  import { locale, locales, setLocale } from '$lib/i18n';
+<script lang="ts">
+  import { locale, locales, setLocale, t } from '$lib/i18n';
+
+  // Definir el tipo de las claves de locale para evitar errores
+  type LocaleKey = keyof typeof locales;
+  
+  // Verificar que $locale es una clave válida
+  $: currentLocale = (($locale as string) in locales) ? ($locale as LocaleKey) : 'es' as LocaleKey;
 </script>
 
 <div class="relative inline-block">
   <button 
     type="button" 
     class="group rounded-full bg-white/90 px-3 py-2 shadow-lg shadow-zinc-800/5 backdrop-blur transition dark:bg-black/90 dark:ring-zinc-800/10 dark:hover:ring-zinc-700/20 dark:hover:bg-black/50 hover:cursor-pointer"
-    aria-label="Cambiar idioma"
+    aria-label={$t('common.navigation.change_language')}
     aria-expanded="true"
     aria-haspopup="true"
     on:click={() => document.getElementById('language-dropdown-menu')?.classList.toggle('hidden')}
   >
     <div class="flex items-center justify-center h-6 w-6">
-      <span class="text-xl">{locales[$locale]?.flag}</span>
+      <span class="text-xl">{locales[currentLocale].flag}</span>
     </div>
   </button>
 

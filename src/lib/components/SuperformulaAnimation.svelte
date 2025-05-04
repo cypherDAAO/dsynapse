@@ -3,8 +3,8 @@
     import * as THREE from 'three';
   
     // Propiedades del componente
-    export let width = '100%';
-    export let height = '100%';
+    export const width = '100%';
+    export const height = '100%';
   
     // Referencias
     let container: HTMLElement;

@@ -10,6 +10,21 @@ import es_credits from './locales/es/credits.json';
 import en_common from './locales/en/common.json';
 import en_credits from './locales/en/credits.json';
 
+/**
+ * @typedef {Object} TranslationNamespace
+ * @property {Object.<string, string|TranslationNamespace>} [key] - Claves de traducción anidadas
+ */
+
+/**
+ * @typedef {Object} LocaleConfig
+ * @property {string} name - Nombre del idioma
+ * @property {string} flag - Emoji de la bandera
+ * @property {Object.<string, TranslationNamespace>} namespaces - Espacios de nombres con traducciones
+ */
+
+/**
+ * @type {Object.<string, LocaleConfig>}
+ */
 // Objeto con todos los idiomas disponibles
 export const locales = {
   es: {
@@ -30,6 +45,9 @@ export const locales = {
   }
 };
 
+/**
+ * @returns {string} - Código del idioma
+ */
 // Determinar el idioma inicial (guardado en localStorage o por defecto del navegador)
 function getInitialLocale() {
   if (!browser) return 'es'; // Por defecto español en el servidor
@@ -47,8 +65,13 @@ export const locale = writable(getInitialLocale());
 
 // Store derivado para las traducciones
 export const t = derived(locale, ($locale) => {
-  // Función para acceder a las traducciones anidadas
-  return function(key) {
+  /**
+   * Función para acceder a las traducciones anidadas
+   * @param {string} key - Clave de traducción en formato 'namespace.clave.subclave'
+   * @param {Object.<string, string>} [params] - Parámetros para reemplazar en la traducción
+   * @returns {string} - Traducción
+   */
+  return function(key, params) {
     // Separar el namespace del resto de la clave
     const [namespace, ...rest] = key.split('.');
     const restKey = rest.join('.');
@@ -69,10 +92,21 @@ export const t = derived(locale, ($locale) => {
       if (value === undefined) return key; // Si no existe la traducción, devolver la clave
     }
     
+    // Si hay parámetros, reemplazarlos en la traducción
+    if (params && typeof value === 'string') {
+      return Object.entries(params).reduce((result, [paramKey, paramValue]) => {
+        return result.replace(new RegExp(`{{${paramKey}}}`, 'g'), paramValue);
+      }, value);
+    }
+    
     return value;
   };
 });
 
+/**
+ * Cambia el idioma actual
+ * @param {string} newLocale - Código del nuevo idioma
+ */
 // Función para cambiar el idioma
 export function setLocale(newLocale) {
   if (locales[newLocale]) {
@@ -83,9 +117,15 @@ export function setLocale(newLocale) {
   }
 }
 
+/**
+ * Añade un nuevo espacio de nombres
+ * @param {string} localeCode - Código del idioma
+ * @param {string} namespace - Nombre del espacio
+ * @param {Object} translations - Objeto con traducciones
+ */
 // Función para añadir un nuevo namespace (útil para cargar traducciones dinámicamente)
-export function addNamespace(locale, namespace, translations) {
-  if (locales[locale]) {
-    locales[locale].namespaces[namespace] = translations;
+export function addNamespace(localeCode, namespace, translations) {
+  if (locales[localeCode]) {
+    locales[localeCode].namespaces[namespace] = translations;
   }
 } 

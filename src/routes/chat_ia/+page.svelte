@@ -19,9 +19,4 @@
       background-color: #111827;
       color: #f3f4f6;
     }
-
-    main {
-      width: 100%;
-      height: 100%;
-    }
   </style>

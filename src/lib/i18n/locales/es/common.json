@@ -5,5 +5,12 @@
   "theme": {
     "dark": "Oscuro",
     "light": "Claro"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "ai_chat": "Chat IA",
+    "menu": "Menú",
+    "close_menu": "Cerrar menú",
+    "change_language": "Cambiar idioma"
   }
 } 

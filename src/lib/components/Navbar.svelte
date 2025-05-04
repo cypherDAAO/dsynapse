@@ -41,7 +41,7 @@
           class="relative rounded-full bg-black/30 px-3 py-2 shadow-lg backdrop-blur-sm transition hover:bg-black/40 hover:cursor-pointer"
         >
           <span class="absolute -inset-0.5"></span>
-          <span class="sr-only">Menú</span>
+          <span class="sr-only">{$t('common.navigation.menu')}</span>
           {#if menuOpen}
             <!-- Icono X -->
             <svg class="block h-6 w-6 stroke-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -69,11 +69,11 @@
           <div class="flex gap-x-4">
             <a href="/" 
                class="text-gray-800 dark:text-white drop-shadow-md hover:bg-black/20 hover:text-white rounded-lg px-3 py-2 font-medium text-lg">
-              Inicio
+              {$t('common.navigation.home')}
             </a>
             <a href="/chat_ia" 
                class="text-gray-800 dark:text-white drop-shadow-md hover:bg-black/20 hover:text-white rounded-lg px-3 py-2 font-medium text-lg">
-              Chat IA
+              {$t('common.navigation.ai_chat')}
             </a>
           </div>
         </div>
@@ -97,13 +97,13 @@
         <div class="flex h-full flex-col overflow-y-scroll bg-white dark:bg-gray-900 shadow-xl">
           <div class="px-4 py-6">
             <div class="flex items-center justify-between mb-4">
-              <div class="text-xl font-bold text-gray-800 dark:text-white">Menú</div>
+              <div class="text-xl font-bold text-gray-800 dark:text-white">{$t('common.navigation.menu')}</div>
               <button
                 type="button"
                 class="rounded-md bg-white dark:bg-gray-900 text-gray-700 dark:text-white hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none"
                 on:click={toggleMenu}
               >
-                <span class="sr-only">Cerrar menú</span>
+                <span class="sr-only">{$t('common.navigation.close_menu')}</span>
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -117,7 +117,7 @@
                     on:click={closeMenu}
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
                   >
-                    Inicio
+                    {$t('common.navigation.home')}
                   </a>
                 </li>
                 <li>
@@ -126,7 +126,7 @@
                     on:click={closeMenu}
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
                   >
-                    Chat IA
+                    {$t('common.navigation.ai_chat')}
                   </a>
                 </li>
                 <li class="mt-4">
