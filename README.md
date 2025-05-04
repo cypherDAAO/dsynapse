@@ -75,3 +75,83 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+## Componente Web3Store
+
+Este proyecto incluye un componente para conectar con wallets Ethereum (principalmente MetaMask) utilizando ethers.js v6.
+
+### Instalación
+
+```bash
+# Con bun
+bun add ethers
+bun add -D @types/ethereum-protocol
+
+# Con npm
+npm install ethers
+npm install --save-dev @types/ethereum-protocol
+```
+
+### Uso
+
+El componente `WalletButton.svelte` proporciona una interfaz para conectar/desconectar la wallet.
+
+```svelte
+<script>
+  import WalletButton from '$lib/components/WalletButton.svelte';
+</script>
+
+<WalletButton />
+```
+
+También puedes usar directamente el store:
+
+```svelte
+<script>
+  import { web3Store, connectWallet, disconnectWallet } from '$lib/components/web3store';
+</script>
+
+{#if $web3Store.isConnected}
+  <p>Conectado con: {$web3Store.account}</p>
+  <button on:click={disconnectWallet}>Desconectar</button>
+{:else}
+  <button on:click={connectWallet}>Conectar</button>
+{/if}
+```
+
+### API
+
+El store exporta las siguientes propiedades:
+
+- `provider`: Instancia de ethers.BrowserProvider
+- `signer`: Instancia de ethers.JsonRpcSigner
+- `account`: Dirección de la wallet conectada
+- `chainId`: ID de la red actual
+- `isConnected`: Estado de conexión
+- `error`: Mensaje de error (si existe)
+- `isLoading`: Indicador de carga durante la conexión
+
+Y las siguientes funciones:
+
+- `connectWallet()`: Conecta con MetaMask
+- `disconnectWallet()`: Desconecta la wallet
+
+### Componente de Prueba
+
+El proyecto incluye un componente de prueba unificado para simular interacciones con wallets Ethereum sin necesidad de tener MetaMask instalado:
+
+```svelte
+<script>
+  import WalletTestSuite from '$lib/components/WalletTestSuite.svelte';
+</script>
+
+<WalletTestSuite />
+```
+
+Este componente permite:
+- Simular conexión y desconexión de wallet
+- Configurar estados (carga, error, etc.)
+- Simular envío de transacciones
+- Ver el estado del store en tiempo real
+
+Puedes acceder a la página de pruebas completa en la ruta `/wallet/test`.
