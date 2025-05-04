@@ -1,4 +1,8 @@
 # dsynapse
+
+Smart Contract: [0x8028f7a9cd0dE3029922dd67919B76C3ae320419](https://etherscan.io/address/0x8028f7a9cd0dE3029922dd67919B76C3ae320419)
+DappSite: https://dsynapse.decentralizedscience.org
+
 ## Developing
 ```bash
 bun run dev
