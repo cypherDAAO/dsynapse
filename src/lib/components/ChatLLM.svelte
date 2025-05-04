@@ -25,8 +25,9 @@
           }
         );
         modelLoaded = true;
-      } catch (error) {
-        statusMessage = `Error al inicializar: ${error.message}`;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+        statusMessage = `Error al inicializar: ${errorMessage}`;
         console.error(error);
       } finally {
         isLoading = false;
@@ -47,22 +48,27 @@
         // Preparar todos los mensajes para la API
         const messages = [
           { role: "system", content: "Eres un asistente de IA útil y preciso." },
-          ...chatMessages
+          ...chatMessages.map(msg => ({ 
+            role: msg.role, 
+            content: msg.content 
+          }))
         ];
         
         // Llamada a la API para generar respuesta
         const response = await engine.chat.completions.create({
-          messages,
+          messages: messages as any,
           temperature: 0.7,
           max_tokens: 500
         });
         
         // Añadir respuesta de la IA
+        const assistantContent = response.choices[0]?.message?.content || 'No se pudo generar una respuesta';
         chatMessages = [...chatMessages, 
-          { role: 'assistant', content: response.choices[0].message.content }
+          { role: 'assistant', content: assistantContent }
         ];
-      } catch (error) {
-        statusMessage = `Error al generar respuesta: ${error.message}`;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+        statusMessage = `Error al generar respuesta: ${errorMessage}`;
         console.error(error);
       } finally {
         isLoading = false;
@@ -126,6 +132,7 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 1rem;
+      background-color: transparent;
     }
     
     header {
@@ -138,6 +145,10 @@
       color: #666;
     }
     
+    :global(.dark) .status-message {
+      color: #aaa;
+    }
+    
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -145,6 +156,13 @@
       background-color: #f5f5f5;
       border-radius: 0.5rem;
       margin-bottom: 1rem;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    :global(.dark) .chat-messages {
+      background-color: #1f2937;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     
     .empty-state {
@@ -155,11 +173,16 @@
       color: #666;
     }
     
+    :global(.dark) .empty-state {
+      color: #aaa;
+    }
+    
     .message {
       padding: 0.8rem;
       border-radius: 0.5rem;
       margin-bottom: 0.8rem;
       max-width: 80%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     
     .message.user {
@@ -167,9 +190,21 @@
       margin-left: auto;
     }
     
+    :global(.dark) .message.user {
+      background-color: #1e3a5f;
+      color: #f3f4f6;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
     .message.assistant {
       background-color: #fff;
       margin-right: auto;
+    }
+    
+    :global(.dark) .message.assistant {
+      background-color: #374151;
+      color: #f3f4f6;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
     
     .message.loading {
@@ -186,6 +221,17 @@
       padding: 0.8rem;
       border: 1px solid #ddd;
       border-radius: 0.5rem;
+      background-color: #fff;
+      color: #333;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    :global(.dark) input {
+      background-color: #374151;
+      color: #f3f4f6;
+      border-color: #4b5563;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
     
     button {
@@ -195,10 +241,42 @@
       border: none;
       border-radius: 0.5rem;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    :global(.dark) button {
+      background-color: #3b82f6;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    button:hover {
+      background-color: #1976d2;
+    }
+    
+    :global(.dark) button:hover {
+      background-color: #2563eb;
     }
     
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+    
+    :global(.dark) button:disabled {
+      background-color: #4b5563;
+      color: #9ca3af;
+    }
+
+    :global(html), :global(body) {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    :global(.dark) {
+      background-color: #111827;
+      color: #f3f4f6;
     }
   </style>
