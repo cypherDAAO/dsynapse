@@ -1,6 +1,11 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as webllm from '@mlc-ai/web-llm';
+    import type { LLM } from '$lib/contracts/LLMIndexer';
+    
+    // Añadir los props para recibir LLM seleccionado y estado de wallet
+    export let selectedLLM: LLM | null = null;
+    export let isWalletConnected: boolean = false;
     
     // Interfaces para tipos
     interface MultiAddr {
@@ -46,6 +51,35 @@
     let pubsubTopic = '';
     
     let engine: webllm.MLCEngineInterface;
+    
+    // Vigilar cambios en selectedLLM para actualizar ipfsCid
+    $: if (selectedLLM && selectedLLM.cid) {
+      console.log('🔍 ChatLLM - selectedLLM detectado:', {
+        nombre: selectedLLM.name,
+        cid: selectedLLM.cid,
+        packedCid: selectedLLM.packedCid
+      });
+      
+      ipfsCid = selectedLLM.cid;
+      console.log('🔍 ChatLLM - ipfsCid actualizado:', ipfsCid);
+      
+      // Solo cargar automáticamente si Helia ya está inicializado
+      if (heliaLoaded) {
+        console.log('🔍 ChatLLM - Helia ya inicializado, cargando prompt desde IPFS');
+        loadPromptFromIPFS();
+      } else {
+        // Si Helia aún no está inicializado, inicializarlo y luego cargar el prompt
+        console.log('🔍 ChatLLM - Inicializando Helia para cargar prompt');
+        initializeHelia().then(heliaInitialized => {
+          if (heliaInitialized) {
+            console.log('🔍 ChatLLM - Helia inicializado correctamente, cargando prompt');
+            loadPromptFromIPFS();
+          } else {
+            console.error('❌ ChatLLM - Error al inicializar Helia');
+          }
+        });
+      }
+    }
     
     // Función para inicializar el motor
     async function initializeEngine() {
@@ -209,6 +243,7 @@
     async function loadPromptFromIPFS() {
       if (!ipfsCid.trim()) return;
       
+      console.log('🔍 ChatLLM - Iniciando carga de prompt desde IPFS. CID:', ipfsCid);
       isLoadingPrompt = true;
       statusMessage = "Preparando para cargar desde IPFS...";
       peersSharing = []; // Reiniciar la lista de peers
@@ -259,6 +294,7 @@
           statusMessage = "Prompt cargado correctamente como String";
           console.log(`⏱️ Contenido cargado en ${endTime - startTime}ms`);
           console.log('📄 Contenido:', systemPrompt.substring(0, 100) + '...');
+          console.log('🔍 ChatLLM - System Prompt completo:', systemPrompt);
           
           // Iniciar el pinning automáticamente
           pinContent(cid);
@@ -278,6 +314,7 @@
             statusMessage = "Prompt cargado correctamente como UnixFS";
             console.log(`⏱️ Contenido cargado como UnixFS en ${endTime - startTime}ms`);
             console.log('📄 Contenido:', content.substring(0, 100) + '...');
+            console.log('🔍 ChatLLM - System Prompt completo:', systemPrompt);
             
             // Iniciar el pinning automáticamente
             pinContent(cid);
@@ -369,12 +406,16 @@
           }))
         ];
         
+        console.log('🔍 ChatLLM - Enviando mensajes a la IA:', messages);
+        
         // Llamada a la API para generar respuesta
         const response = await engine.chat.completions.create({
           messages: messages as any,
           temperature: 0.7,
           max_tokens: 500
         });
+        
+        console.log('🔍 ChatLLM - Respuesta de la IA:', response);
         
         // Añadir respuesta de la IA
         const assistantContent = response.choices[0]?.message?.content || 'No se pudo generar una respuesta';
@@ -399,16 +440,22 @@
   <div class="chat-container">
     <header>
       <h1>Chat con IA en el navegador</h1>
-      <div class="ipfs-input">
-        <input
-          bind:value={ipfsCid}
-          placeholder="Hash CID de IPFS (ej: bafkreidu3jls5e3xrjkos65nzoj3lihxqhkqnsmuistk6uarfgnjcb26ke)"
-          disabled={isLoadingPrompt}
-        />
-        <button on:click={loadPromptFromIPFS} disabled={!ipfsCid.trim() || isLoadingPrompt}>
-          Cargar Prompt
-        </button>
-      </div>
+      
+      {#if !isWalletConnected}
+        <div class="wallet-warning">
+          <p>Conecta tu wallet para acceder a los prompts de la blockchain</p>
+        </div>
+      {:else if selectedLLM}
+        <div class="selected-llm">
+          <p>Prompt cargado: <strong>{selectedLLM.name}</strong></p>
+          <p class="cid-info">CID: {selectedLLM.cid.substring(0, 20)}...</p>
+        </div>
+      {:else}
+        <div class="select-prompt-message">
+          <p>Selecciona un prompt de la lista para comenzar</p>
+        </div>
+      {/if}
+      
       <p class="status-message">{statusMessage}</p>
       {#if isPinned}
         <p class="sharing-info">🌐 Estás compartiendo recursos con la red IPFS - ¡Gracias por contribuir!</p>
@@ -421,7 +468,11 @@
     <main class="chat-messages">
       {#if chatMessages.length === 0}
         <div class="empty-state">
-          {#if modelLoaded}
+          {#if !isWalletConnected}
+            <p>Conecta tu wallet para comenzar</p>
+          {:else if !selectedLLM}
+            <p>Selecciona un prompt para comenzar</p>
+          {:else if modelLoaded}
             <p>¡Escribe tu primer mensaje para comenzar!</p>
             {#if systemPrompt !== "Eres un asistente de IA útil y preciso."}
               <p class="prompt-loaded">Prompt especializado cargado</p>
@@ -448,11 +499,13 @@
     <footer class="chat-input">
       <input
         bind:value={inputMessage}
-        placeholder="Escribe tu mensaje..."
-        disabled={!modelLoaded || isLoading}
+        placeholder={isWalletConnected && selectedLLM ? "Escribe tu mensaje..." : "Conecta tu wallet y selecciona un prompt para comenzar"}
+        disabled={!isWalletConnected || !selectedLLM || !modelLoaded || isLoading}
         on:keydown={(e) => e.key === 'Enter' && sendMessage()}
       />
-      <button on:click={sendMessage} disabled={!modelLoaded || isLoading}>
+      <button 
+        on:click={sendMessage} 
+        disabled={!isWalletConnected || !selectedLLM || !modelLoaded || isLoading}>
         Enviar
       </button>
     </footer>
@@ -474,15 +527,50 @@
       margin-bottom: 1rem;
     }
     
-    .ipfs-input {
-      display: flex;
-      gap: 0.5rem;
+    .wallet-warning {
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
       margin: 1rem 0;
     }
     
-    .prompt-loaded {
-      color: #2196f3;
-      font-weight: bold;
+    :global(.dark) .wallet-warning {
+      background-color: #463c1b;
+      color: #ffe69c;
+    }
+    
+    .selected-llm {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    :global(.dark) .selected-llm {
+      background-color: #1f2937;
+      color: #10b981;
+      border: 1px solid #10b981;
+    }
+    
+    .cid-info {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      opacity: 0.8;
+    }
+    
+    .select-prompt-message {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    :global(.dark) .select-prompt-message {
+      background-color: #1e3a8a;
+      color: #60a5fa;
     }
     
     .sharing-info {
@@ -513,6 +601,11 @@
     :global(.dark) .peers-info {
       color: #ffc107;
       background-color: rgba(255, 193, 7, 0.1);
+    }
+    
+    .prompt-loaded {
+      color: #2196f3;
+      font-weight: bold;
     }
     
     :global(.dark) .prompt-loaded {

@@ -228,62 +228,10 @@
 	</div>
 </section>
 
-<main>
-	<h1>Conexión a Ethereum con SvelteKit</h1>
-	<div class="wallet-container">
-		<WalletButton />
-	</div>
-</main>
-
-<div class="wallet-link">
-	<a href="/wallet">Conectar con Wallet Ethereum</a>
-</div>
-
 <style lang="postcss">
 	@reference "tailwindcss";
 	:global(html) {
 		scroll-behavior: smooth;
 		background-color: theme(--color-zinc-50);
-	}
-
-	main {
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 2rem;
-		text-align: center;
-	}
-
-	h1 {
-		margin-bottom: 2rem;
-		color: #333;
-	}
-
-	.wallet-container {
-		max-width: 400px;
-		margin: 0 auto;
-		padding: 1.5rem;
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		background: white;
-	}
-
-	.wallet-link {
-		display: flex;
-		justify-content: center;
-		margin-top: 2rem;
-	}
-
-	.wallet-link a {
-		background: #4a56e2;
-		color: white;
-		text-decoration: none;
-		padding: 0.75rem 1.5rem;
-		border-radius: 4px;
-		font-weight: bold;
-		transition: background 0.2s;
-	}
-
-	.wallet-link a:hover {
-		background: #3a46c2;
 	}
 </style>

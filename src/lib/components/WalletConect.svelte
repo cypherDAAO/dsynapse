@@ -1,6 +1,6 @@
 <!-- src/lib/components/WalletConnect.svelte -->
 <script>
-    import { web3Store, connectWallet, disconnectWallet } from '$lib/stores/web3Store.js';
+    import { web3Store, connectWallet, disconnectWallet } from './web3store';
     import { onDestroy } from 'svelte';
 
     // Suscribirse al store para obtener valores reactivos
