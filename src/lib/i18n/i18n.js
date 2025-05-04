@@ -29,7 +29,7 @@ import en_credits from './locales/en/credits.json';
 export const locales = {
   es: {
     name: 'Español',
-    flag: '🇪🇸',
+    flag: '🇲🇽',
     namespaces: {
       common: es_common,
       credits: es_credits

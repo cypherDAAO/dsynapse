@@ -31,7 +31,7 @@
 	<style>
 		html,
 		body {
-			background-color: white;
+			background-color: var(--color-zinc-50);
 			transition: background-color 300ms;
 			font-family: var(--font-inter);
 			text-rendering: optimizeLegibility;
@@ -57,7 +57,7 @@
 </svelte:head>
 
 <div
-	class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-950 dark:text-white transition-colors duration-300"
+	class="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-white transition-colors duration-300"
 >
 	<Navbar />
 	<main class="mt-[-64px] flex-grow">
