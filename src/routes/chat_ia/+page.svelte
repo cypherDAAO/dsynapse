@@ -28,10 +28,10 @@
     }
 </script>
 
-<section class="mt-[128px] container mx-auto px-4 mb-16">
+<section class="mt-[64px] container mx-auto px-4 mb-16">
   {#if !isWalletConnected}
     <!-- Pantalla de conexión de wallet -->
-    <div class="flex justify-center items-center min-h-[70vh] mt-16">
+    <div class="flex justify-center items-center min-h-[70vh]">
       <div class="bg-white dark:bg-[#1a1a2e] p-10 md:p-12 rounded-3xl shadow-xl max-w-lg w-full text-center animate-fadeIn border border-fuchsia-100 dark:border-fuchsia-900/30 backdrop-blur-sm">
         <div class="mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-50 to-fuchsia-100 dark:from-fuchsia-900/20 dark:to-fuchsia-800/30 text-fuchsia-600 dark:text-fuchsia-300 mb-8 shadow-inner">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -60,7 +60,7 @@
     </div>
   {:else}
     <!-- Interfaz principal cuando la wallet está conectada -->
-    <div class="mt-16">
+    <div class="">
       <!-- Barra superior con información de wallet (visible solo en desktop) -->
       <div class="hidden md:flex justify-between items-center mb-6 p-4 bg-white dark:bg-[#1a1a2e] rounded-2xl shadow-lg border border-gray-100 dark:border-fuchsia-900/30 backdrop-blur-sm">
         <div class="flex items-center text-sm text-gray-700 dark:text-fuchsia-200">
