@@ -53,6 +53,7 @@
 		"multiformats": "^13.3.2",
 		"parcel": "^2.14.4",
 		"process": "^0.11.10",
+		"sveltejs-adapter-ipfs": "^0.4.12",
 		"tailwindcss": "^4.1.5",
 		"three": "^0.176.0",
 		"tslib": "^2.8.1",

@@ -89,7 +89,8 @@
           class="llm-item {selectedLLM?.name === llm.name ? 'selected' : ''}"
           on:click={() => handleSelect(llm)}
           on:keydown={(e) => e.key === 'Enter' && handleSelect(llm)}
-          tabindex="0"
+          role="button"
+          aria-selected={selectedLLM?.name === llm.name}
         >
           <div class="llm-name">{llm.name}</div>
           <div class="llm-cid">{llm.cid.substring(0, 20)}...</div>

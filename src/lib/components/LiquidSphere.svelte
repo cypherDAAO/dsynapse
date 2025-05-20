@@ -512,4 +512,4 @@
 	bind:this={containerElement}
 	class="w-full h-full"
 	style="height: 500px; overflow: hidden; border-radius: 8px; cursor: pointer; background: transparent;"
-/> 
+></div> 

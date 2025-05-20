@@ -240,7 +240,7 @@
 			{$t('home.cta.subtitle')}
 		</p>
 		<a
-			href="#"
+			href="/"
 			class="bg-white text-fuchsia-700 hover:bg-blue-50 font-bold py-3 px-8 rounded-lg transition-colors shadow-lg inline-block"
 		>
 			{$t('home.cta.button')}
