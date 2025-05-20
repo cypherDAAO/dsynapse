@@ -24,6 +24,7 @@
         "multiformats": "^13.3.2",
         "parcel": "^2.14.4",
         "process": "^0.11.10",
+        "sveltejs-adapter-ipfs": "^0.4.12",
         "tailwindcss": "^4.1.5",
         "three": "^0.176.0",
         "tslib": "^2.8.1",
@@ -1956,6 +1957,8 @@
     "svelte-check": ["svelte-check@4.1.5", "", { "dependencies": { "@jridgewell/trace-mapping": "^0.3.25", "chokidar": "^4.0.1", "fdir": "^6.2.0", "picocolors": "^1.0.0", "sade": "^1.7.4" }, "peerDependencies": { "svelte": "^4.0.0 || ^5.0.0-next.0", "typescript": ">=5.0.0" }, "bin": { "svelte-check": "bin/svelte-check" } }, "sha512-Gb0T2IqBNe1tLB9EB1Qh+LOe+JB8wt2/rNBDGvkxQVvk8vNeAoG+vZgFB/3P5+zC7RWlyBlzm9dVjZFph/maIg=="],
 
     "svelte-eslint-parser": ["svelte-eslint-parser@1.1.0", "", { "dependencies": { "eslint-scope": "^8.2.0", "eslint-visitor-keys": "^4.0.0", "espree": "^10.0.0", "postcss": "^8.4.49", "postcss-scss": "^4.0.9", "postcss-selector-parser": "^7.0.0" }, "peerDependencies": { "svelte": "^3.37.0 || ^4.0.0 || ^5.0.0" }, "optionalPeers": ["svelte"] }, "sha512-JP0v/wzDXWxza6c8K9ZjKKHYfgt0KidlbWx1e9n9UV4q+o28GTkk71fR0IDZDmLUDYs3vSq0+Tm9fofDqzGe1w=="],
+
+    "sveltejs-adapter-ipfs": ["sveltejs-adapter-ipfs@0.4.12", "", { "peerDependencies": { "@sveltejs/kit": "^1.5.0" } }, "sha512-XltyQ63yYcX01MEbCZESHlW+wrNOkBmbFvy1NbHJYSrN18OFvUl8rdJZFFTvHJlI4pyidP57eSed/PXvmhH3Mw=="],
 
     "tailwindcss": ["tailwindcss@4.1.5", "", {}, "sha512-nYtSPfWGDiWgCkwQG/m+aX83XCwf62sBgg3bIlNiiOcggnS1x3uVRDAuyelBFL+vJdOPPCGElxv9DjHJjRHiVA=="],
 

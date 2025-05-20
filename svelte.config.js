@@ -5,11 +5,12 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter({
-			fallback: 'index.html', // Esto hace que todas las rutas se sirvan con index.html
+			fallback: 'index.html', // Para SPA mode - esto hará que todas las rutas se sirvan con index.html
 			strict: false // Esto permite que las rutas no encontradas no causen errores
 		}),
 		paths: {
-			relative: true // Establecemos esta propiedad para usar rutas absolutas
+			relative: true, // Usamos rutas relativas para compatibilidad con IPFS
+			base: '' // Aseguramos que la base sea una cadena vacía para URLs relativas
 		},
 		// Configuración específica para manejar rutas
 		prerender: {
